@@ -1,0 +1,87 @@
+﻿@using System.Text.Json;
+
+
+
+
+
+<table>
+
+    <tr>
+        <th>Số điện thoại</th>
+        <th>Giờ</th>
+        <th>Bàn</th>
+    </tr>
+    <tr>
+        @if(ViewBag.bills != null)
+        {
+            @using (var context = new QuanLiQuanAnContext())
+            {
+
+
+                @foreach (Bill bill in ViewBag.bills)
+                {
+
+                    TableFood tb = context.TableFoods.FirstOrDefault(x => x.Id == bill.IdTable);
+                    <tr>
+               <td>@bill.Phone</td>
+               <td>@bill.DateCheckIn</td>
+
+               <td>@tb.Name</td>
+
+           </tr>
+                }
+            }
+        }
+
+
+        
+       
+    </tr>
+</table>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ID
+            </th>
+            <th>
+                Tên bàn
+            </th>
+            <th>
+                Tình trạng
+            </th>
+            
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (TableFood item in ViewBag.list) {
+        <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+
+                    @if (item.Status.Equals("Bàn trống") && Context.Session.GetString("acc")!= null)
+                    {
+                        Account user = (Account)JsonSerializer.Deserialize<Account>(Context.Session.GetString("acc"));
+                        string phone = user.Phone;
+                        <a  href="/TableFood/DatBan?id=@item.Id&&phone=@phone" >Đặt bàn</a>
+ 
+                    }
+                    @if (item.Status.Equals("Đã đặt"))
+                    {
+                        
+
+                    }
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
